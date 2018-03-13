@@ -66,7 +66,7 @@ class MigrateCommand extends Command
 
         $packages = $this->findPackagesToUpdate();
         if (! isset($packages['zendframework/zend-expressive'])) {
-            $output->writeln('<error>Package zendframework/zend-expressive has not been detected.');
+            $output->writeln('<error>Package zendframework/zend-expressive has not been detected.</error>');
             return 1;
         }
 
