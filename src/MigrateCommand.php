@@ -23,6 +23,7 @@ class MigrateCommand extends Command
     private $packages = [
         'zendframework/zend-diactoros',
         'zendframework/zend-component-installer',
+        'zendframework/zend-problem-details',
         'zendframework/zend-stratigility',
     ];
 
