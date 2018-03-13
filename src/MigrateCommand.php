@@ -336,6 +336,10 @@ class MigrateCommand extends Command
                 'Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware',
             'Zend\Expressive\Middleware\ImplicitOptionsMiddleware' =>
                 'Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware',
+            // Expressive v2.2
+            'Zend\Expressive\Router\Middleware\RouteMiddleware' =>
+                'Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware',
+            'RouteMiddleware::class)' => 'PathBasedRoutingMiddleware::class)',
         ];
 
         $pipeline = strtr($pipeline, $replacement);
