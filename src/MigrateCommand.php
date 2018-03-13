@@ -310,8 +310,7 @@ class MigrateCommand extends Command
 
         $replacement = [
             '->pipeRoutingMiddleware();' =>
-                '->pipe(\Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware::class);'
-                    . PHP_EOL . '$app->pipe(\Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class);',
+                '->pipe(\Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware::class);',
             '->pipeDispatchMiddleware();' => '->pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class);',
             'Zend\Expressive\Middleware\NotFoundHandler' => 'Zend\Expressive\Handler\NotFoundHandler',
             'Zend\Expressive\Middleware\ImplicitHeadMiddleware' =>
@@ -321,6 +320,29 @@ class MigrateCommand extends Command
         ];
 
         $pipeline = strtr($pipeline, $replacement);
+
+        // Find the latest
+        $search = [
+            'PathBasedRoutingMiddleware::class);' => false,
+            'ImplicitHeadMiddleware::class);' => false,
+            'ImplicitHeadMiddleware\');' => false,
+            'ImplicitHeadMiddleware");' => false,
+            'ImplicitOptionsMiddleware::class);' => false,
+            'ImplicitOptionsMiddleware");' => false,
+        ];
+
+        foreach ($search as $string => &$pos) {
+            $pos = strrpos($pipeline, $string);
+        }
+        arsort($search);
+
+        $string = key($search);
+        $pipeline = preg_replace(
+            '/' . preg_quote($string, '/') . '/',
+            $string . PHP_EOL . '$app->pipe(\Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class);',
+            $pipeline
+        );
+
         file_put_contents('config/pipeline.php', $pipeline);
 
         $this->output->writeln(' <comment>DONE</comment>');
