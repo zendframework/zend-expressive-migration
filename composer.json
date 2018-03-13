@@ -1,6 +1,6 @@
 {
     "name": "webimpress/zend-expressive-migration",
-    "description": "hub remote ",
+    "description": "Migrate Expressive App v2 to v3",
     "license": "BSD-2-Clause",
     "keywords": [
         "expressive",
@@ -15,12 +15,12 @@
     },
     "require": {
         "php": "^7.1",
-        "symfony/console": "^4.0"
+        "symfony/console": "^2.8 || ^3.0 || ^4.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7.0.1",
+        "phpunit/phpunit": "^7.0.2",
         "zendframework/zend-coding-standard": "~1.0.0",
-        "zendframework/zend-expressive": "^3.0alpha9"
+        "zendframework/zend-expressive": "^3.0.0rc4"
     },
     "autoload": {
         "psr-4": {
