@@ -131,8 +131,6 @@ class MigrateCommand extends Command
         $this->updateRoutes();
         $this->replaceIndex();
 
-        $src = $this->getDirectory('Please provide the path to the application sources', 'src');
-
         if (isset($packages['zendframework/zend-pimple-config'])) {
             $container = $this->getFileContent('src/ExpressiveInstaller/Resources/config/container-pimple.php');
             file_put_contents('config/container.php', $container);
@@ -143,6 +141,7 @@ class MigrateCommand extends Command
             file_put_contents('config/container.php', $container);
         }
 
+        $src = $this->getDirectory('Please provide the path to the application sources', 'src');
         $this->migrateInteropMiddlewares($src);
 
         $actionDir = $this->getDirectory(
