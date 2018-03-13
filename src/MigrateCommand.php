@@ -370,7 +370,7 @@ class MigrateCommand extends Command
 
     private function getFileContent(string $path) : string
     {
-        $uri = 'https://raw.githubusercontent.com/zendframework/zend-expressive-skeleton/release-3.0.0/';
+        $uri = 'https://raw.githubusercontent.com/zendframework/zend-expressive-skeleton/develop/';
 
         return file_get_contents($uri . 'public/index.php');
     }
