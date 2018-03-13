@@ -93,4 +93,70 @@ First we try to detect currently used expressive version.
 If detected version is not 2.X script exits and no any action
 will be preformed.
 
-Then magic begins...
+**Then magic begins...**
+
+1. Removes `vendor` directory.
+
+2. Installs current dependencies: `composer install`.
+
+3. Analyzes composer.lock to find all packages which depends on expressive packages.
+
+4. Removes all installed expressive packages and packages which depends on them.
+
+5. Updates all remaining packages: `composer update`.
+
+6. Requires all expressive packages previously installed
+  (packages `zendframework/zend-component-installer` and `zendframework/zend-expressive-tooling` will be added to `require-dev` section even if these were not installed before).
+
+7. Requires all dependent packages installed previously
+  (this step may fail in case some of external packages are not compatible with Expressive v3).
+
+8. Updates `config/pipeline.php`:
+   a. adds function wrapper;
+   b. adds strict type declaration on top of the file;
+   c. updates middlewares:
+      - `pipeRoutingMiddleware` (or `Zend\Expressive\Router\Middleware\RouteMiddleware` from Expressive 2.2) to `Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware`,
+      - `pipeDispatchMiddleware` to `Zend\Expressive\Router\Middleware\DispatchMiddleware`,
+      - `Zend\Expressive\Middleware\NotFoundHandler` to `Zend\Expressive\Handler\NotFoundHandler`,
+      - `Zend\Expressive\Middleware\ImplicitHeadMiddleware` to `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware`,
+      - `Zend\Expressive\Middleware\ImplicitOptionsMiddleware` to `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware`,
+
+   d. pipes `Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware` after `Implicit*Middleware` (or if these are not piped after `Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware`).
+
+9. Updates `config/routes.php`:
+   a. adds function wrapper;
+   b. adds strict type declaration on top of the file.
+
+10. Replaces `public/index.php` with the latest version from skeleton.
+
+11. Updates container configuration if `pimple` or `Aura.Di` were used (`config/container.php`) from the latest skeleton version:
+    - `pimple`: package `xtreamwayz/pimple-container-interop` is replaced by `zendframework/zend-pimple-config`;
+    - `Aura.Di`: package `zendframework/zend-auradi-config` is installed.
+
+12. Migrates interop middlewares to PSR-11 middlewares
+  (script asks to provide path to source directory, default `src`).
+
+13. Migrates middlewares to handler requests (only if delegator is not used)
+  (script asks to provide path to action middlewares).
+
+14. Runs CS aut-fixer if script `vendor/bin/phpcbf` is available.
+
+15. DONE!
+
+## What to do after migration?
+
+You need update your tests to use PSR-11 middlewares instead of interop middlewares.
+This step is not done automatically because _it is too complicated_.
+We can easily change imported classes but unfortunately it's really hard to find all `handle`
+usages.
+
+Please compare diff to manually verify all changes. It is possible that in some
+edge case script is not going to work correctly. Depends how many modifications to
+the original skeleton you have provided.
+
+You can also import classes and improve formatting in files
+`config/pipeline.php` and `config/routes.php`.
+
+> NOTE:
+>
+> Script does not work currently with Application delegator.
