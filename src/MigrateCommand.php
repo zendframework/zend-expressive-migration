@@ -214,7 +214,9 @@ class MigrateCommand extends Command
         $composer = $this->getComposerContent();
         $composer['config']['sort-packages'] = true;
         if (isset($composer['config']['platform']['php'])
-            && strpos($composer['config']['platform']['php'], '7.0') !== false
+            && strpos($composer['config']['platform']['php'], '7.1') === false
+            && strpos($composer['config']['platform']['php'], '7.2') === false
+            && strpos($composer['config']['platform']['php'], '7.3') === false
         ) {
             $composer['config']['platform']['php'] = '7.1.3';
         }
