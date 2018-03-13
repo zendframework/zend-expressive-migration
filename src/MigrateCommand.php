@@ -71,14 +71,30 @@ class MigrateCommand extends Command
         }
 
         $expressive = $packages['zendframework/zend-expressive'];
-        if (preg_match('/\d+\.\d+/', $expressive['constraint'], $matches)) {
+        if (preg_match('/\d+\.\d+(\.\d+)?/', $expressive['constraint'], $matches)) {
             $version = $matches[0];
-        } else {
-            // todo: try to get version from composer.lock ?
+        } elseif (file_exists('composer.lock')) {
+            $lock = json_decode(file_get_contents('composer.lock'), true);
+            foreach ($lock['packages'] as $package) {
+                if (strtolower($package['name']) === 'zendframework/zend-expressive'
+                    && preg_match('/\d+\.\d+(\.\d+)?/', $package['version'], $matches)
+                ) {
+                    $version = $matches[0];
+                }
+            }
+        }
+
+        if (! isset($version)) {
             $output->writeln('<error>Cannot detect expressive version.</error>');
             return 1;
         }
+
         $output->writeln(sprintf('<info>Detected expressive in version %s</info>', $version));
+
+        if (strpos($version, '2.') !== 0) {
+            $output->writeln(sprintf('<error>This tool can migrate only Expressive v2 applications</error>'));
+            return 1;
+        }
 
         $removePackages = [];
         if (isset($packages['aura/di'])) {
