@@ -402,11 +402,11 @@ class MigrateCommand extends Command
 
         $contents = file_get_contents($file);
 
-        if (strpos('return function', $contents) !== false) {
+        if (strpos($contents, 'return function') !== false) {
             return false;
         }
 
-        if (strpos('strict_types', $contents) === false) {
+        if (strpos($contents, 'strict_types') === false) {
             $contents = str_replace('<?php', '<?php' . PHP_EOL . PHP_EOL . 'declare(strict_types=1);', $contents);
         }
 
