@@ -1,7 +1,7 @@
 # zend-expressive-migration
 
-[![Build Status](https://secure.travis-ci.org/webimpress/zend-expressive-migration.svg?branch=master)](https://secure.travis-ci.org/webimpress/zend-expressive-migration)
-[![Coverage Status](https://coveralls.io/repos/github/webimpress/zend-expressive-migration/badge.svg?branch=master)](https://coveralls.io/github/webimpress/zend-expressive-migration?branch=master)
+[![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive-migration.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive-migration)
+[![Coverage Status](https://coveralls.io/repos/github/zendframework/zend-expressive-migration/badge.svg?branch=master)](https://coveralls.io/github/zendframework/zend-expressive-migration?branch=master)
 
 This library provides tool to migrate from Expressive v2 to v3.
 
@@ -10,22 +10,22 @@ This library provides tool to migrate from Expressive v2 to v3.
 Run the following to install this library:
 
 ```console
-$ composer require --dev webimpress/zend-expressive-migration
+$ composer require --dev zendframework/zend-expressive-migration
 ```
 
 ## How to use this tool
 
-If you've installed `webimpress/zend-expressive-migration` using composer you
+If you've installed `zendframework/zend-expressive-migration` using composer you
 can run migration script in your expressive v2 application:
 
 ```console
-$ vendor/webimpress/zend-expressive-migration/bin/expressive-migration migrate
+$ vendor/zendframework/zend-expressive-migration/bin/expressive-migration migrate
 ```
 
 You can also clone repository to separate directory:
 
 ```console
-$ git clone https://github.com/webimpress/zend-expressive-migration
+$ git clone https://github.com/zendframework/zend-expressive-migration
 ```
 
 and run script from your expressive v2 application:
