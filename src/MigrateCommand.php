@@ -328,24 +328,20 @@ class MigrateCommand extends Command
 
         $replacement = [
             '->pipeRoutingMiddleware();' =>
-                '->pipe(\Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware::class);',
+                '->pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class);',
             '->pipeDispatchMiddleware();' => '->pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class);',
             'Zend\Expressive\Middleware\NotFoundHandler' => 'Zend\Expressive\Handler\NotFoundHandler',
             'Zend\Expressive\Middleware\ImplicitHeadMiddleware' =>
                 'Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware',
             'Zend\Expressive\Middleware\ImplicitOptionsMiddleware' =>
                 'Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware',
-            // Expressive v2.2
-            'Zend\Expressive\Router\Middleware\RouteMiddleware' =>
-                'Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware',
-            'RouteMiddleware::class)' => 'PathBasedRoutingMiddleware::class)',
         ];
 
         $pipeline = strtr($pipeline, $replacement);
 
         // Find the latest
         $search = [
-            'PathBasedRoutingMiddleware::class);' => false,
+            'RouteMiddleware::class);' => false,
             'ImplicitHeadMiddleware::class);' => false,
             'ImplicitHeadMiddleware\');' => false,
             'ImplicitHeadMiddleware");' => false,

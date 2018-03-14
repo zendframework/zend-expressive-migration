@@ -115,7 +115,7 @@ will be preformed.
    a. adds function wrapper;
    b. adds strict type declaration on top of the file;
    c. updates middlewares:
-      - `pipeRoutingMiddleware` (or `Zend\Expressive\Router\Middleware\RouteMiddleware` from Expressive 2.2) to `Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware`,
+      - `pipeRoutingMiddleware` to `Zend\Expressive\Router\Middleware\RouteMiddleware`,
       - `pipeDispatchMiddleware` to `Zend\Expressive\Router\Middleware\DispatchMiddleware`,
       - `Zend\Expressive\Middleware\NotFoundHandler` to `Zend\Expressive\Handler\NotFoundHandler`,
       - `Zend\Expressive\Middleware\ImplicitHeadMiddleware` to `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware`,
