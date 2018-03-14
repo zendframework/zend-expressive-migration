@@ -119,6 +119,10 @@ class MigrateCommand extends Command
             ];
         }
 
+        if (isset($packages['http-interop/http-middleware'])) {
+            $removePackages[] = 'http-interop/http-middleware';
+        }
+
         if ($removePackages) {
             exec(sprintf(
                 'composer remove %s',
