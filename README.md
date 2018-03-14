@@ -3,7 +3,7 @@
 [![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive-migration.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive-migration)
 [![Coverage Status](https://coveralls.io/repos/github/zendframework/zend-expressive-migration/badge.svg?branch=master)](https://coveralls.io/github/zendframework/zend-expressive-migration?branch=master)
 
-This library provides tool to migrate from Expressive v2 to v3.
+This library provides a tool for migrating from Expressive v2 to v3.
 
 ## Installation
 
@@ -13,40 +13,43 @@ Run the following to install this library:
 $ composer require --dev zendframework/zend-expressive-migration
 ```
 
-## How to use this tool
+## Usage
 
-If you've installed `zendframework/zend-expressive-migration` using composer you
-can run migration script in your expressive v2 application:
+Once you have installed the tool, execute it with the following:
 
-```console
-$ vendor/zendframework/zend-expressive-migration/bin/expressive-migration migrate
+```bash
+$ ./vendor/bin/expressive-migration migrate
 ```
 
-You can also clone repository to separate directory:
-
-```console
-$ git clone https://github.com/zendframework/zend-expressive-migration
-```
-
-and run script from your expressive v2 application:
-
-```console
-$ path/to/zend-expressive-migration/bin/expressive-migration migrate
-```
+> ### Cloning versus composer installation
+>
+> If you'd rather clone the tooling once and re-use it many times, you can do
+> that instead. Clone using:
+>
+> ```bash
+> $ git clone https://github.com/zendframework/zend-expressive-migration
+> ```
+>
+> And then, instead of using `./vendor/bin/expressive-migration migrate`, use
+> `/full/path/to/zend-expressive-migration/bin/expressive-migration`.
 
 > **TODO:**
 >
-> Our goal is to prepare phar library with migration tool.
+> Our goal is to prepare a downloadable [phar](http://php.net/phar) file that
+> can be installed in your system and re-used; this change will come at a future
+> date.
 
 ## Requirements
 
-All external packages used within your project must be compatible with expressive v3 libraries.
+All external packages used within your project must be compatible with
+Expressive v3 libraries. If you are unsure, check their dependencies.
 
-Script will uninstall all dependent packages and then will try to install them with the latest
-compatible version. In case there is any package not compatible it will report an error, which
-package needs to be updated.
+This script will uninstall all dependent packages and then will try to install
+them with the latest compatible version. In case any package is not compatible,
+the script will report an error indicating which package need to be updated.
 
-Here is the list of `Zend Framework` expressive packages:
+The following table indicates Expressive package versions compatible with
+version 3, and to which the migration tool will update.
 
 | Package name                                      | Version |
 | ------------------------------------------------- | ------- |
@@ -84,79 +87,81 @@ Here is the list of `Zend Framework` expressive packages:
 | zend-stratigility                                 | 3.0.0   |
 
 
-## What that tool actually is doing?
+## What does the tool do?
 
-There must be `composer.json` in your application directory
-and the file must be writable by the script. 
+In order to operate, the tool requires that the application directory contains a
+`composer.json` file, and that this file is writable by the script.
 
-First we try to detect currently used expressive version.
-If detected version is not 2.X script exits and no any action
-will be preformed.
+Next, it attempts to detect the currently used Expressive version. If the
+version detected is not a 2.X version, the script will exit without performing
+any changes.
 
-**Then magic begins...**
+It then performs the following steps:
 
-1. Removes `vendor` directory.
+1. Removes the `vendor` directory.
 
-2. Installs current dependencies: `composer install`.
+2. Installs current dependencies using `composer install`.
 
-3. Analyzes composer.lock to find all packages which depends on expressive packages.
+3. Analyzes `composer.lock` to identify all packages which depends on Expressive packages.
 
-4. Removes all installed expressive packages and packages which depends on them.
+4. Removes all installed Expressive packages and packages that depend on them.
 
-5. Updates all remaining packages: `composer update`.
+5. Updates all remaining packages using `composer update`.
 
-6. Requires all expressive packages previously installed
-  (packages `zendframework/zend-component-installer` and `zendframework/zend-expressive-tooling` will be added to `require-dev` section even if these were not installed before).
+6. Requires all Expressive packages previously installed, adding the packages
+   `zendframework/zend-component-installer` and `zendframework/zend-expressive-tooling`
+   as development packages if they were not previously installed.
 
-7. Requires all dependent packages installed previously
-  (this step may fail in case some of external packages are not compatible with Expressive v3).
+7. Requires all packages installed previously that were dependent on Expressive.
+   **This step may fail** in situations where external packages are not yet
+   compatible with Expressive v3 or its required libraries.
 
 8. Updates `config/pipeline.php`:
-   a. adds function wrapper;
-   b. adds strict type declaration on top of the file;
-   c. updates middlewares:
-      - `pipeRoutingMiddleware` to `Zend\Expressive\Router\Middleware\RouteMiddleware`,
-      - `pipeDispatchMiddleware` to `Zend\Expressive\Router\Middleware\DispatchMiddleware`,
-      - `Zend\Expressive\Middleware\NotFoundHandler` to `Zend\Expressive\Handler\NotFoundHandler`,
-      - `Zend\Expressive\Middleware\ImplicitHeadMiddleware` to `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware`,
-      - `Zend\Expressive\Middleware\ImplicitOptionsMiddleware` to `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware`,
-
-   d. pipes `Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware` after `Implicit*Middleware` (or if these are not piped after `Zend\Expressive\Router\Middleware\PathBasedRoutingMiddleware`).
+   1. adds strict type declarations to the top of the file;
+   2. adds a function wrapper (as is done in the version 3 skeleton);
+   3. updates the following middleware:
+      - `pipeRoutingMiddleware` becomes a `pipe()` statement referencing `Zend\Expressive\Router\Middleware\RouteMiddleware`.
+      - `pipeDispatchMiddleware` becomes a `pipe()` statement referencing `Zend\Expressive\Router\Middleware\DispatchMiddleware`,
+      - Referenes to `Zend\Expressive\Middleware\NotFoundHandler` become `Zend\Expressive\Handler\NotFoundHandler`,
+      - References to `Zend\Expressive\Middleware\ImplicitHeadMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware`,
+      - References to `Zend\Expressive\Middleware\ImplicitOptionsMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware`,
+   4. pipes `Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware` after
+      `Implicit*Middleware` (or if these are not piped, after
+      `Zend\Expressive\Router\Middleware\RouteMiddleware`).
 
 9. Updates `config/routes.php`:
-   a. adds function wrapper;
-   b. adds strict type declaration on top of the file.
+   1. adds strict type declaration on top of the file;
+   2. adds a function wrapper (as is done in the version 3 skeleton).
 
-10. Replaces `public/index.php` with the latest version from skeleton.
+10. Replaces `public/index.php` with the latest version from the v3 skeleton.
 
-11. Updates container configuration if `pimple` or `Aura.Di` were used (`config/container.php`) from the latest skeleton version:
-    - `pimple`: package `xtreamwayz/pimple-container-interop` is replaced by `zendframework/zend-pimple-config`;
-    - `Aura.Di`: package `zendframework/zend-auradi-config` is installed.
+11. Updates container configuration if `pimple` or `Aura.Di` were used
+    (`config/container.php`) from the latest skeleton version. Additionally, it
+    does the following:
+    - For `pimple`: the package `xtreamwayz/pimple-container-interop` is replaced by `zendframework/zend-pimple-config`.
+    - For `Aura.Di`: the package `aura/di` is replaced by `zendframework/zend-auradi-config`.
 
-12. Migrates interop middlewares to PSR-11 middlewares
-  (script asks to provide path to source directory, default `src`).
+12. Migrates http-interop middleware to PSR-15 middleware using
+    `./vendor/bin/expressive migrate:interop-middleware`.
 
-13. Migrates middlewares to handler requests (only if delegator is not used)
-  (script asks to provide path to action middlewares).
+13. Migrates PSR-15 middleware to PSR-15 request handlers using
+    `./vendor/bin/expressive migrate:middleware-to-request-handler`.
 
-14. Runs CS aut-fixer if script `vendor/bin/phpcbf` is available.
+14. Runs `./vendor/bin/phpcbf` if it is available.
 
-15. DONE!
+## What should you do after migration?
 
-## What to do after migration?
+You will need to update your tests to use PSR-15 middleware instead of
+http-interop middleware.  This step is not done automatically because _it is too
+complicated_. We can easily change imported classes, but unfortunately test
+strategies and mocking strategies vary widely, and detecting all http-interop
+variants makes this even more difficult.
 
-You need update your tests to use PSR-11 middlewares instead of interop middlewares.
-This step is not done automatically because _it is too complicated_.
-We can easily change imported classes but unfortunately it's really hard to find all `handle`
-usages.
+Please manually compare and verify all changes made. It is possible that in some
+edge cases, the script will not work correctly. This will depend primarily on
+the number of modifications you have made to the original skeleton.
 
-Please compare diff to manually verify all changes. It is possible that in some
-edge case script is not going to work correctly. Depends how many modifications to
-the original skeleton you have provided.
-
-You can also import classes and improve formatting in files
-`config/pipeline.php` and `config/routes.php`.
-
-> NOTE:
+> #### Configuration-driven pipelines and routes
 >
-> Script does not work currently with Application delegator.
+> The script does not work currently make any modifications to pipeline and
+> route configuration; these will need to be updated manually.
