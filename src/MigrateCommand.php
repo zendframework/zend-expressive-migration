@@ -34,6 +34,8 @@ class MigrateCommand extends Command
 
     private $packagesPattern = '#^zendframework/zend-expressive#';
 
+    private $skeletonVersion;
+
     protected function configure()
     {
         $this->setDescription('Migrate ZF Expressive application to the latest version.');
@@ -393,9 +395,37 @@ class MigrateCommand extends Command
         $this->output->writeln(' <comment>DONE</comment>');
     }
 
+    private function detectLastSkeletonVersion(string $match) : string
+    {
+        if (! $this->skeletonVersion) {
+            $this->skeletonVersion = 'master';
+
+            $package = json_decode(
+                file_get_contents('https://packagist.org/p/zendframework/zend-expressive-skeleton.json'),
+                true
+            );
+
+            $versions = array_reverse($package['packages']['zendframework/zend-expressive-skeleton']);
+
+            foreach ($versions as $version => $details) {
+                if (strpos($version, $match) === 0) {
+                    $this->output->write(sprintf(' <info>from skeleton version: %s</info>', $version));
+                    $this->skeletonVersion = $version;
+                    break;
+                }
+            }
+        }
+
+        return $this->skeletonVersion;
+    }
+
     private function getFileContent(string $path) : string
     {
-        $uri = 'https://raw.githubusercontent.com/zendframework/zend-expressive-skeleton/develop/';
+        $version = $this->detectLastSkeletonVersion('3.');
+        $uri = sprintf(
+            'https://raw.githubusercontent.com/zendframework/zend-expressive-skeleton/%s/',
+            $version
+        );
 
         return file_get_contents($uri . 'public/index.php');
     }
