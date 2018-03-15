@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.1.2 - 2018-03-15
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Fixes an issue that occurs when running in an application that does not
+  require zend-diactoros in the package root. The tool now explicitly requires it
+  before doing any other migrations.
+
+- Adds a default directory in which to convert middleware to request handlers.
+
+- Adds logic to remove the tool package itself during migration, ensuring it is
+  not present in the final artifacts.
+
 ## 0.1.1 - 2018-03-15
 
 ### Added
