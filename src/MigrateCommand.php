@@ -32,7 +32,7 @@ class MigrateCommand extends Command
         'zendframework/zend-stratigility',
     ];
 
-    private $packagesPattern = '#^zendframework/zend-expressive#';
+    private $packagesPattern = '#^zendframework/zend-expressive(?!-migration)#';
 
     private $skeletonVersion;
 
@@ -154,7 +154,8 @@ class MigrateCommand extends Command
         $this->migrateInteropMiddlewares($src);
 
         $actionDir = $this->getDirectory(
-            'Please provide the path to the application actions to be converted to request handlers'
+            'Please provide the path to the application actions to be converted to request handlers',
+            'src'
         );
 
         $this->migrateMiddlewaresToRequestHandlers($actionDir);
@@ -218,6 +219,7 @@ class MigrateCommand extends Command
     {
         exec('rm -Rf vendor');
         exec('composer install --no-interaction');
+        exec('composer require "zendframework/zend-diactoros:^1.7.1"');
 
         $composer = $this->getComposerContent();
         $composer['config']['sort-packages'] = true;
@@ -303,6 +305,8 @@ class MigrateCommand extends Command
         }
 
         $commands = [
+            // Remove this package itself if it was previously installed
+            sprintf('composer remove -q zendframework/zend-expressive-migration'),
             sprintf(
                 'composer remove --dev %s --no-interaction',
                 implode(' ', array_merge($require, $requireDev, $extraRequire, $extraRequireDev))
