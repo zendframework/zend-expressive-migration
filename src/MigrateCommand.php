@@ -427,7 +427,7 @@ class MigrateCommand extends Command
             $version
         );
 
-        return file_get_contents($uri . 'public/index.php');
+        return file_get_contents($uri . $path);
     }
 
     private function addFunctionWrapper(string $file) : bool
