@@ -122,7 +122,7 @@ It then performs the following steps:
    3. updates the following middleware:
       - `pipeRoutingMiddleware` becomes a `pipe()` statement referencing `Zend\Expressive\Router\Middleware\RouteMiddleware`.
       - `pipeDispatchMiddleware` becomes a `pipe()` statement referencing `Zend\Expressive\Router\Middleware\DispatchMiddleware`,
-      - Referenes to `Zend\Expressive\Middleware\NotFoundHandler` become `Zend\Expressive\Handler\NotFoundHandler`,
+      - References to `Zend\Expressive\Middleware\NotFoundHandler` become `Zend\Expressive\Handler\NotFoundHandler`,
       - References to `Zend\Expressive\Middleware\ImplicitHeadMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware`,
       - References to `Zend\Expressive\Middleware\ImplicitOptionsMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware`,
    4. pipes `Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware` after
