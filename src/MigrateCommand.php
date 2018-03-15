@@ -76,16 +76,14 @@ class MigrateCommand extends Command
             return 1;
         }
 
-        $expressive = $packages['zendframework/zend-expressive'];
-        if (preg_match('/\d+\.\d+(\.\d+)?/', $expressive['constraint'], $matches)) {
-            $version = $matches[0];
-        } elseif (file_exists('composer.lock')) {
+        if (file_exists('composer.lock')) {
             $lock = json_decode(file_get_contents('composer.lock'), true);
             foreach ($lock['packages'] as $package) {
                 if (strtolower($package['name']) === 'zendframework/zend-expressive'
                     && preg_match('/\d+\.\d+(\.\d+)?/', $package['version'], $matches)
                 ) {
                     $version = $matches[0];
+                    break;
                 }
             }
         }
