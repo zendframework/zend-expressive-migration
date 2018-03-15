@@ -28,7 +28,6 @@ class MigrateCommand extends Command
     private $packages = [
         'zendframework/zend-diactoros',
         'zendframework/zend-component-installer',
-        'zendframework/zend-expressive-hal',
         'zendframework/zend-problem-details',
         'zendframework/zend-stratigility',
     ];
@@ -39,7 +38,7 @@ class MigrateCommand extends Command
 
     protected function configure()
     {
-        $this->setDescription('Migrate ZF Expressive application to the latest version.');
+        $this->setDescription('Migrate an Expressive application from version 2 to version 3.');
         $this->addArgument(
             'path',
             InputArgument::OPTIONAL,
@@ -343,27 +342,26 @@ class MigrateCommand extends Command
 
         $pipeline = file_get_contents('config/pipeline.php');
 
+        // @codingStandardsIgnoreStart
         $replacement = [
-            '->pipeRoutingMiddleware();' =>
-                '->pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class);',
-            '->pipeDispatchMiddleware();' => '->pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class);',
-            'Zend\Expressive\Middleware\NotFoundHandler' => 'Zend\Expressive\Handler\NotFoundHandler',
-            'Zend\Expressive\Middleware\ImplicitHeadMiddleware' =>
-                'Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware',
-            'Zend\Expressive\Middleware\ImplicitOptionsMiddleware' =>
-                'Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware',
+            '->pipeRoutingMiddleware();'                           => '->pipe(\Zend\Expressive\Router\Middleware\RouteMiddleware::class);',
+            '->pipeDispatchMiddleware();'                          => '->pipe(\Zend\Expressive\Router\Middleware\DispatchMiddleware::class);',
+            'Zend\Expressive\Middleware\NotFoundHandler'           => 'Zend\Expressive\Handler\NotFoundHandler',
+            'Zend\Expressive\Middleware\ImplicitHeadMiddleware'    => 'Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware',
+            'Zend\Expressive\Middleware\ImplicitOptionsMiddleware' => 'Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware',
         ];
+        // @codingStandardsIgnoreEnd
 
         $pipeline = strtr($pipeline, $replacement);
 
         // Find the latest
         $search = [
-            'RouteMiddleware::class);' => false,
-            'ImplicitHeadMiddleware::class);' => false,
-            'ImplicitHeadMiddleware\');' => false,
-            'ImplicitHeadMiddleware");' => false,
+            'RouteMiddleware::class);'           => false,
+            'ImplicitHeadMiddleware::class);'    => false,
+            'ImplicitHeadMiddleware\');'         => false,
+            'ImplicitHeadMiddleware");'          => false,
             'ImplicitOptionsMiddleware::class);' => false,
-            'ImplicitOptionsMiddleware");' => false,
+            'ImplicitOptionsMiddleware");'       => false,
         ];
 
         foreach ($search as $string => &$pos) {
