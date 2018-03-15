@@ -228,8 +228,6 @@ class MigrateCommand extends Command
         ) {
             $composer['config']['platform']['php'] = '7.1.3';
         }
-        // todo: remove this entry after zend-expressive release
-        $composer['minimum-stability'] = 'alpha';
 
         $this->updateComposer($composer);
 
