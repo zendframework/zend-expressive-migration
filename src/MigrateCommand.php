@@ -168,7 +168,7 @@ class MigrateCommand extends Command
     {
         $this->output->writeln('<question>Running CS auto-fixer</question>');
         if (file_exists('vendor/bin/phpcbf')) {
-            exec('vendor/bin/phpcbf', $output);
+            exec('composer cs-fix', $output);
             $this->output->writeln($output);
         }
     }
@@ -197,7 +197,7 @@ class MigrateCommand extends Command
     private function migrateInteropMiddlewares(string $src) : void
     {
         exec(sprintf(
-            'vendor/bin/expressive migrate:interop-middleware --src %s',
+            'composer expressive -- migrate:interop-middleware --src %s',
             $src
         ), $output);
 
@@ -207,7 +207,7 @@ class MigrateCommand extends Command
     private function migrateMiddlewaresToRequestHandlers(string $dir) : void
     {
         exec(sprintf(
-            'vendor/bin/expressive migrate:middleware-to-request-handler --src %s',
+            'composer expressive -- migrate:middleware-to-request-handler --src %s',
             $dir
         ), $output);
 
@@ -230,6 +230,15 @@ class MigrateCommand extends Command
         }
         // todo: remove this entry after zend-expressive release
         $composer['minimum-stability'] = 'alpha';
+
+        // Add composer scripts
+        if (file_exists('vendor/bin/phpcs')) {
+            $composer['scripts']['cs-check'] = 'phpcs';
+        }
+        if (file_exists('vendor/bin/phpcbf')) {
+            $composer['scripts']['cs-fix'] = 'phpcbf';
+        }
+        $composer['scripts']['expressive'] = 'expressive';
 
         $this->updateComposer($composer);
 
