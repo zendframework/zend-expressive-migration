@@ -219,7 +219,6 @@ class MigrateCommand extends Command
     {
         exec('rm -Rf vendor');
         exec('composer install --no-interaction');
-        exec('composer require "zendframework/zend-diactoros:^1.7.1"');
 
         $composer = $this->getComposerContent();
         $composer['config']['sort-packages'] = true;
@@ -294,7 +293,7 @@ class MigrateCommand extends Command
             }
         }
 
-        $require = [];
+        $require = ['zendframework/zend-diactoros'];
         $requireDev = [];
         foreach ($packages as $name => $package) {
             if ($package['dev']) {
@@ -316,8 +315,8 @@ class MigrateCommand extends Command
                 implode(' ', array_merge($require, $requireDev, $extraRequire, $extraRequireDev))
             ),
             sprintf('composer update --no-interaction'),
-            sprintf('composer require --dev %s --no-interaction', implode(' ', $requireDev)),
             sprintf('composer require %s --no-interaction', implode(' ', $require)),
+            sprintf('composer require --dev %s --no-interaction', implode(' ', $requireDev)),
             sprintf('composer require %s --no-interaction', implode(' ', $extraRequire)),
             sprintf('composer require --dev %s --no-interaction', implode(' ', $extraRequireDev)),
         ];
