@@ -22,6 +22,10 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
+- [#10](https://github.com/zendframework/zend-expressive-migration/pull/10)
+  fixes a scenario whereby the RC4 skeleton would be selected over the stable
+  one as the basis for the bootstrap files.
+
 - [#12](https://github.com/zendframework/zend-expressive-migration/pull/12)
   modifies how zend-diactoros is added to the root package. Instead of an
   additional `composer require` statement fired early, it is added to the
