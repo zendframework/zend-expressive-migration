@@ -410,19 +410,18 @@ class MigrateCommand extends Command
             $this->skeletonVersion = 'master';
 
             $package = json_decode(
-                file_get_contents('https://packagist.org/p/zendframework/zend-expressive-skeleton.json'),
+                file_get_contents('https://packagist.org/packages/zendframework/zend-expressive-skeleton.json'),
                 true
             );
 
-            $versions = array_reverse($package['packages']['zendframework/zend-expressive-skeleton']);
-
-            foreach ($versions as $version => $details) {
-                if (strpos($version, $match) === 0) {
-                    $this->output->write(sprintf(' <info>from skeleton version: %s</info>', $version));
+            foreach ($package['package']['versions'] as $version => $details) {
+                if (preg_match($match, $version)) {
                     $this->skeletonVersion = $version;
                     break;
                 }
             }
+
+            $this->output->write(sprintf(' <info>from skeleton version: %s</info>', $version));
         }
 
         return $this->skeletonVersion;
@@ -430,7 +429,7 @@ class MigrateCommand extends Command
 
     private function getFileContent(string $path) : string
     {
-        $version = $this->detectLastSkeletonVersion('3.');
+        $version = $this->detectLastSkeletonVersion('/^3\.\d+\.\d+$/');
         $uri = sprintf(
             'https://raw.githubusercontent.com/zendframework/zend-expressive-skeleton/%s/',
             $version
