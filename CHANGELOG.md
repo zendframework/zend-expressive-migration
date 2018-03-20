@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.1.3 - 2018-03-20
+
+### Added
+
+- Nothing.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- [#12](https://github.com/zendframework/zend-expressive-migration/pull/12)
+  modifies how zend-diactoros is added to the root package. Instead of an
+  additional `composer require` statement fired early, it is added to the
+  package requirements, and the package requirements are now installed before any
+  development requirements to ensure the PSR-7 implementation is discovered.
+
 ## 0.1.2 - 2018-03-15
 
 ### Added
