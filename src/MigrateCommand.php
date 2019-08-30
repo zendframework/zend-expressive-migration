@@ -136,6 +136,7 @@ class MigrateCommand extends Command
         }
 
         $this->updatePackages($packages);
+        $this->updateConfigPipeline();
         $this->updatePipeline();
         $this->updateRoutes();
         $this->replaceIndex();
@@ -332,6 +333,80 @@ class MigrateCommand extends Command
                 return;
             }
         }
+    }
+
+    private function updateConfigPipeline() : void
+    {
+        $this->output->write('<info>Updating config pipeline...</info>');
+
+        $files = glob('config/autoload/*.php');
+
+        foreach ($files as $file) {
+            $content = file_get_contents($file);
+
+            $newContent = $content;
+            $newContent = preg_replace(
+                '/(\\\?Zend\\\Expressive\\\)?Application::ROUTING_MIDDLEWARE/',
+                "\Zend\Expressive\Router\Middleware\RouteMiddleware::class",
+                $newContent
+            );
+            $newContent = preg_replace(
+                '/(\\\?Zend\\\Expressive\\\)?Application::DISPATCH_MIDDLEWARE/',
+                "\Zend\Expressive\Router\Middleware\DispatchMiddleware::class",
+                $newContent
+            );
+
+            // @codingStandardsIgnoreStart
+            $replacement = [
+                'NotFoundHandler'           => 'Zend\Expressive\Handler',
+                'ImplicitHeadMiddleware'    => 'Zend\Expressive\Router\Middleware',
+                'ImplicitOptionsMiddleware' => 'Zend\Expressive\Router\Middleware',
+            ];
+            // @codingStandardsIgnoreEnd
+
+            foreach ($replacement as $search => $replace) {
+                $newContent = preg_replace(
+                    '/\\\?(((Zend\\\)?Expressive\\\)?Middleware\\\)?' . $search . '/',
+                    '\\' . $replace . '\\' . $search,
+                    $newContent
+                );
+            }
+
+            $newContent = preg_replace('/^use \\\\/m', 'use ', $newContent);
+
+            $search = [
+                'RouteMiddleware'           => false,
+                'ImplicitHeadMiddleware'    => false,
+                'ImplicitOptionsMiddleware' => false,
+            ];
+
+            foreach ($search as $string => &$pos) {
+                $pos = strrpos($newContent, $string);
+            }
+            arsort($search);
+
+            $string = key($search);
+            $n = $search[$string] + strlen($string);
+            $splitPos = false;
+            if (strpos($newContent, '::class', $n) === $n) {
+                $splitPos = $n + strlen('::class');
+            } elseif ($newContent[$n] === '\'' || $newContent[$n] === '"') {
+                $splitPos = $n + 1;
+            }
+
+            if ($splitPos) {
+                $newContent = substr($newContent, 0, $splitPos)
+                    . ',' . PHP_EOL
+                    . '\Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware::class'
+                    . substr($newContent, $splitPos);
+            }
+
+            if ($newContent !== $content) {
+                file_put_contents($file, $newContent);
+            }
+        }
+
+        $this->output->writeln(' <comment>DONE</comment>');
     }
 
     private function updatePipeline() : void
