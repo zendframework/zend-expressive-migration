@@ -1,7 +1,7 @@
 <?php
 /**
  * @see       https://github.com/zendframework/zend-expressive-migration for the canonical source repository
- * @copyright Copyright (c) 2018 Zend Technologies USA Inc. (https://www.zend.com)
+ * @copyright Copyright (c) 2018-2019 Zend Technologies USA Inc. (https://www.zend.com)
  * @license   https://github.com/zendframework/zend-expressive-migration/blob/master/LICENSE.md New BSD License
  */
 
@@ -483,6 +483,12 @@ class MigrateCommand extends Command
 
     private function updateComposer(array $data) : void
     {
+        foreach ($data as $sectionName => $sectionData) {
+            if (is_array($sectionData) && ! $sectionData) {
+                unset($data[$sectionName]);
+            }
+        }
+
         file_put_contents('composer.json', json_encode($data, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
     }
 
