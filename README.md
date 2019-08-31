@@ -116,38 +116,49 @@ It then performs the following steps:
    **This step may fail** in situations where external packages are not yet
    compatible with Expressive v3 or its required libraries.
 
-8. Updates `config/pipeline.php`:
+8. Updates configuration-driven pipelines
+   1. updates the following middleware:
+      - `Application::ROUTING_MIDDLEWARE` becomes `Zend\Expressive\Router\Middleware\RouteMiddleware::class`.
+      - `Application::DISPATCH_MIDDLEWARE` becomes `Zend\Expressive\Router\Middleware\DispatchMiddleware::class`.
+      - References to `Zend\Expressive\Middleware\NotFoundHandler` become `Zend\Expressive\Handler\NotFoundHandler`.
+      - References to `Zend\Expressive\Middleware\ImplicitHeadMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware`.
+      - References to `Zend\Expressive\Middleware\ImplicitOptionsMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware`.
+   2. pipes `Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware` after
+      `Implicit*Middleware` (or if these are not piped, after
+      `Zend\Expressive\Router\Middleware\RouteMiddleware`).
+
+9. Updates `config/pipeline.php`:
    1. adds strict type declarations to the top of the file;
    2. adds a function wrapper (as is done in the version 3 skeleton);
    3. updates the following middleware:
       - `pipeRoutingMiddleware` becomes a `pipe()` statement referencing `Zend\Expressive\Router\Middleware\RouteMiddleware`.
-      - `pipeDispatchMiddleware` becomes a `pipe()` statement referencing `Zend\Expressive\Router\Middleware\DispatchMiddleware`,
-      - References to `Zend\Expressive\Middleware\NotFoundHandler` become `Zend\Expressive\Handler\NotFoundHandler`,
-      - References to `Zend\Expressive\Middleware\ImplicitHeadMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware`,
-      - References to `Zend\Expressive\Middleware\ImplicitOptionsMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware`,
+      - `pipeDispatchMiddleware` becomes a `pipe()` statement referencing `Zend\Expressive\Router\Middleware\DispatchMiddleware`.
+      - References to `Zend\Expressive\Middleware\NotFoundHandler` become `Zend\Expressive\Handler\NotFoundHandler`.
+      - References to `Zend\Expressive\Middleware\ImplicitHeadMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware`.
+      - References to `Zend\Expressive\Middleware\ImplicitOptionsMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware`.
    4. pipes `Zend\Expressive\Router\Middleware\MethodNotAllowedMiddleware` after
       `Implicit*Middleware` (or if these are not piped, after
       `Zend\Expressive\Router\Middleware\RouteMiddleware`).
 
-9. Updates `config/routes.php`:
+10. Updates `config/routes.php`:
    1. adds strict type declaration on top of the file;
    2. adds a function wrapper (as is done in the version 3 skeleton).
 
-10. Replaces `public/index.php` with the latest version from the v3 skeleton.
+11. Replaces `public/index.php` with the latest version from the v3 skeleton.
 
-11. Updates container configuration if `pimple` or `Aura.Di` were used
+12. Updates container configuration if `pimple` or `Aura.Di` were used
     (`config/container.php`) from the latest skeleton version. Additionally, it
     does the following:
     - For `pimple`: the package `xtreamwayz/pimple-container-interop` is replaced by `zendframework/zend-pimple-config`.
     - For `Aura.Di`: the package `aura/di` is replaced by `zendframework/zend-auradi-config`.
 
-12. Migrates http-interop middleware to PSR-15 middleware using
+13. Migrates http-interop middleware to PSR-15 middleware using
     `./vendor/bin/expressive migrate:interop-middleware`.
 
-13. Migrates PSR-15 middleware to PSR-15 request handlers using
+14. Migrates PSR-15 middleware to PSR-15 request handlers using
     `./vendor/bin/expressive migrate:middleware-to-request-handler`.
 
-14. Runs `./vendor/bin/phpcbf` if it is available.
+15. Runs `./vendor/bin/phpcbf` if it is available.
 
 ## What should you do after migration?
 
@@ -160,8 +171,3 @@ variants makes this even more difficult.
 Please manually compare and verify all changes made. It is possible that in some
 edge cases, the script will not work correctly. This will depend primarily on
 the number of modifications you have made to the original skeleton.
-
-> #### Configuration-driven pipelines and routes
->
-> The script does not work currently make any modifications to pipeline and
-> route configuration; these will need to be updated manually.
