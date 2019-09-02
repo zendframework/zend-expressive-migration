@@ -118,8 +118,10 @@ It then performs the following steps:
 
 8. Updates configuration-driven pipelines
    1. updates the following middleware:
-      - `Application::ROUTING_MIDDLEWARE` becomes `Zend\Expressive\Router\Middleware\RouteMiddleware::class`.
-      - `Application::DISPATCH_MIDDLEWARE` becomes `Zend\Expressive\Router\Middleware\DispatchMiddleware::class`.
+      - `Zend\Expressive\Application::ROUTING_MIDDLEWARE`/`Zend\Expressive\Container\ApplicationFactory::ROUTING_MIDDLEWARE`
+        becomes `Zend\Expressive\Router\Middleware\RouteMiddleware::class`.
+      - `Zend\Expressive\Application::DISPATCH_MIDDLEWARE`/`Zend\Expressive\Container\ApplicationFactory::DISPATCH_MIDDLEWARE`
+        becomes `Zend\Expressive\Router\Middleware\DispatchMiddleware::class`.
       - References to `Zend\Expressive\Middleware\NotFoundHandler` become `Zend\Expressive\Handler\NotFoundHandler`.
       - References to `Zend\Expressive\Middleware\ImplicitHeadMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitHeadMiddleware`.
       - References to `Zend\Expressive\Middleware\ImplicitOptionsMiddleware` become `Zend\Expressive\Router\Middleware\ImplicitOptionsMiddleware`.
