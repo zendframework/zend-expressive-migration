@@ -343,8 +343,9 @@ class MigrateCommand extends Command
 
         foreach ($files as $file) {
             $content = file_get_contents($file);
-
             $newContent = $content;
+
+            // Constants in Expressive Application
             $newContent = preg_replace(
                 '/(\\\?Zend\\\Expressive\\\)?Application::ROUTING_MIDDLEWARE/',
                 "\Zend\Expressive\Router\Middleware\RouteMiddleware::class",
@@ -352,6 +353,18 @@ class MigrateCommand extends Command
             );
             $newContent = preg_replace(
                 '/(\\\?Zend\\\Expressive\\\)?Application::DISPATCH_MIDDLEWARE/',
+                "\Zend\Expressive\Router\Middleware\DispatchMiddleware::class",
+                $newContent
+            );
+
+            // Constants in ApplicationFactory
+            $newContent = preg_replace(
+                '/(\\\?Zend\\\Expressive\\\Container\\\)?ApplicationFactory::ROUTING_MIDDLEWARE/',
+                "\Zend\Expressive\Router\Middleware\RouteMiddleware::class",
+                $newContent
+            );
+            $newContent = preg_replace(
+                '/(\\\?Zend\\\Expressive\\\Container\\\)?ApplicationFactory::DISPATCH_MIDDLEWARE/',
                 "\Zend\Expressive\Router\Middleware\DispatchMiddleware::class",
                 $newContent
             );
