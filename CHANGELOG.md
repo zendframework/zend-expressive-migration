@@ -2,6 +2,28 @@
 
 All notable changes to this project will be documented in this file, in reverse chronological order by release.
 
+## 0.1.4 - TBD
+
+### Added
+
+- [#18](https://github.com/zendframework/zend-expressive-migration/pull/18) adds compatibility with symfony/console ^5.0.
+
+### Changed
+
+- Nothing.
+
+### Deprecated
+
+- Nothing.
+
+### Removed
+
+- Nothing.
+
+### Fixed
+
+- Nothing.
+
 ## 0.1.3 - 2018-03-20
 
 ### Added
