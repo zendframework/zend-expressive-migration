@@ -22,7 +22,9 @@ All notable changes to this project will be documented in this file, in reverse 
 
 ### Fixed
 
-- Nothing.
+- [#17](https://github.com/zendframework/zend-expressive-migration/pull/17) fixes saving composer.json contents.
+  In some edge cases we saved invalid composer.json content with empty `[]` instead of `{}` for some sections.
+  Now we are dropping empty sections.
 
 ## 0.1.3 - 2018-03-20
 
