@@ -2,7 +2,7 @@
 
 > ## Repository abandoned 2019-12-31
 >
-> This repository has moved to mezzio/mezzio-migration.
+> This repository has moved to [mezzio/mezzio-migration](https://github.com/mezzio/mezzio-migration).
 
 [![Build Status](https://secure.travis-ci.org/zendframework/zend-expressive-migration.svg?branch=master)](https://secure.travis-ci.org/zendframework/zend-expressive-migration)
 [![Coverage Status](https://coveralls.io/repos/github/zendframework/zend-expressive-migration/badge.svg?branch=master)](https://coveralls.io/github/zendframework/zend-expressive-migration?branch=master)
